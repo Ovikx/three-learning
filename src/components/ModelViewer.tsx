@@ -1,9 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { NoiseGenerator } from './PerlinNoise';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const basePlateLength = 5;
 const subdivisions = 25;
+const gen = new NoiseGenerator();
+const heightMap: number[][] = gen.generate(10, 5);
 
 function Box (props: JSX.IntrinsicElements['mesh']) {
     const mesh = useRef<THREE.Mesh>(null!);
@@ -53,7 +57,7 @@ function Buildings (props: JSX.IntrinsicElements['mesh']) {
             const x = i*(basePlateLength/subdivisions)-(basePlateLength/2);
             const y = 0.25;
             const z = j*(basePlateLength/subdivisions)-(basePlateLength/2);
-            const height = Math.random()*2;
+            const height: number = Math.pow(heightMap[i][j]*2, 2);
             const width = basePlateLength/(subdivisions*1.5)
 
             buildings.push(
@@ -67,7 +71,6 @@ function Buildings (props: JSX.IntrinsicElements['mesh']) {
                 </mesh>
             );
             counter++;
-            console.log(`added mesh at: ${x}, ${y}, ${z}`);
         }
     }
     return (
@@ -84,7 +87,7 @@ function Buildings (props: JSX.IntrinsicElements['mesh']) {
 function City (props: JSX.IntrinsicElements['mesh']) {
     const mesh = useRef<THREE.Mesh>(null!);
     useFrame((state, delta) => {
-        mesh.current.rotation.y += 0.0025;
+        //mesh.current.rotation.y += 0.0025;
     })
 
     return (
@@ -98,11 +101,18 @@ function City (props: JSX.IntrinsicElements['mesh']) {
     )
 }
 
-function Camera () {
-    useFrame(({camera}) => {
-        camera.position.y = 2
-        camera.setRotationFromAxisAngle(new THREE.Vector3(1,0,0), -0.3);
-    });
+function CameraController () {
+    const {camera, gl } = useThree();
+    useEffect(() => {
+        const controls = new OrbitControls(camera, gl.domElement);
+        controls.target = new THREE.Vector3(0,0,0);
+        controls.minDistance = 3;
+        controls.maxDistance = 20;
+        return () => {
+            controls.dispose();
+        };
+    }, [camera, gl])
+
     return null;
 }
 
@@ -112,7 +122,7 @@ export const ModelViewer = () => {
             <ambientLight />
             <pointLight position={[10,10,10]} />
             <City />
-            <Camera />
+            <CameraController />
         </Canvas>
     );
 }
