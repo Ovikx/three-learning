@@ -7,7 +7,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 const basePlateLength = 5;
 const subdivisions = 25;
 const gen = new NoiseGenerator();
-const heightMap: number[][] = gen.generate(10, 5);
+const heightMap: number[][] = gen.generate(6, 6);
 
 function Box (props: JSX.IntrinsicElements['mesh']) {
     const mesh = useRef<THREE.Mesh>(null!);
@@ -68,6 +68,11 @@ function Buildings (props: JSX.IntrinsicElements['mesh']) {
                     key={counter}
                 >
                         <boxGeometry args={[width, height, width]} />
+                        <meshStandardMaterial
+                            color={new THREE.Color(0xfcba03)}
+                            metalness={1}
+                            roughness={0.3}
+                        />
                 </mesh>
             );
             counter++;
