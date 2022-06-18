@@ -21,7 +21,7 @@ const Base = (props: JSX.IntrinsicElements['mesh']) => {
             position={[0,0,0]}
         >
             <boxGeometry
-                args={[3, 0.1, 3]}
+                args={[1, 0.1, 1]}
             />
             <meshStandardMaterial
                 metalness={1}
@@ -38,7 +38,7 @@ const Skyscraper = (props: JSX.IntrinsicElements['mesh']) => {
     let segments: Segment[] = createBuilding('spike-up', 'blue');
 
     let meshes: JSX.Element[] = [];
-    let currentHeight = 0.1;
+    let currentHeight = 0;
     let keyCounter = 0;
     segments.forEach((segment: Segment) => {
         const height = currentHeight + segment.height/2
@@ -72,8 +72,8 @@ function CameraController () {
     useEffect(() => {
         const controls = new OrbitControls(camera, gl.domElement);
         controls.target = new THREE.Vector3(0,0,0);
-        controls.minDistance = 10;
-        controls.maxDistance = 30;
+        controls.minDistance = 2;
+        controls.maxDistance = 10;
         return () => {
             controls.dispose();
         };
