@@ -85,11 +85,13 @@ export class NoiseGenerator {
                 const c3 = [...grid[Math.floor(tinyRow/detail)+1][Math.floor(tinyCol/detail)+1], 1, -1];
                 const corners = [c0, c1, c2, c3];
                 let sum = 0;
+                let count = 0;
                 corners.forEach((corner) => {
                     const offsetVector: number[] = [pos[0]-corner[2], pos[1]-corner[3]];
                     sum += offsetVector[0]*corner[0] + offsetVector[1]*corner[1];
+                    count++;
                 })
-                row.push(sum);
+                row.push(sum/count);
 
             }
             img.push(row);
