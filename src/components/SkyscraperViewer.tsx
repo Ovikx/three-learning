@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { NoiseGenerator } from './PerlinNoise';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { createBuilding } from './SkyscraperBuilder';
 
 export interface Segment {
     length: number,
@@ -34,18 +35,7 @@ const Base = (props: JSX.IntrinsicElements['mesh']) => {
 const Skyscraper = (props: JSX.IntrinsicElements['mesh']) => {
     const mesh = useRef<THREE.Mesh>(null!);
     const numSegments = Number(Math.random()*3+3);
-    let segments: Segment[] = [];
-    for (let i = 0; i < numSegments; i++) {
-        const length = Math.random()*0.5 + 1;
-        const height = Math.random()*3 + 0.5;
-        segments.push(
-            {
-                length: length,
-                height: height,
-                width: length
-            }
-        );
-    }
+    let segments: Segment[] = createBuilding('spike-up', 'blue');
 
     let meshes: JSX.Element[] = [];
     let currentHeight = 0.1;
