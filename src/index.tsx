@@ -8,7 +8,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <div>
-    <h1>HI HOW ARE YOU</h1>
-    <SkyscraperViewer />
+    <h1>three testing</h1>
+    <ModelViewer />
   </div>
 );

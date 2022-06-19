@@ -73,7 +73,7 @@ function CameraController () {
         const controls = new OrbitControls(camera, gl.domElement);
         controls.target = new THREE.Vector3(0,0,0);
         controls.minDistance = 2;
-        controls.maxDistance = 10;
+        controls.maxDistance = 5;
         return () => {
             controls.dispose();
         };
@@ -83,7 +83,7 @@ function CameraController () {
 }
 
 export const SkyscraperViewer = () => {
-    const [render, rerender] = useState(true);
+    const [render, rerender] = useState(false);
     
     return (
         <div>

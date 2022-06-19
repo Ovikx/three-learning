@@ -7,7 +7,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 const basePlateLength = 5;
 const subdivisions = 25;
 const gen = new NoiseGenerator();
-const heightMap: number[][] = gen.generate(6, 6);
+
 
 function Box (props: JSX.IntrinsicElements['mesh']) {
     const mesh = useRef<THREE.Mesh>(null!);
@@ -49,9 +49,11 @@ function CityBase (props: JSX.IntrinsicElements['mesh']) {
 }
 
 function Buildings (props: JSX.IntrinsicElements['mesh']) {
+    const heightMap: number[][] = gen.generate(6, 5);
     const mesh = useRef<THREE.Mesh>(null!);
     const buildings = [];
     let counter = 0;
+    const hue = Math.random()*360;
     for (let i = 1; i < subdivisions; i++) {
         for (let j = 1; j < subdivisions; j++) {
             const x = i*(basePlateLength/subdivisions)-(basePlateLength/2);
@@ -59,7 +61,9 @@ function Buildings (props: JSX.IntrinsicElements['mesh']) {
             const z = j*(basePlateLength/subdivisions)-(basePlateLength/2);
             const height: number = Math.pow(heightMap[i][j]*2, 2);
             const width = basePlateLength/(subdivisions*1.5)
+            const saturation = Math.floor(heightMap[i][j]*100);
 
+            const color = new THREE.Color(`hsl(${hue}, ${saturation}%, 50%)`);
             buildings.push(
                 <mesh
                     {...props}
@@ -69,9 +73,11 @@ function Buildings (props: JSX.IntrinsicElements['mesh']) {
                 >
                         <boxGeometry args={[width, height, width]} />
                         <meshStandardMaterial
-                            color={new THREE.Color(0xfcba03)}
+                            color={color}
                             metalness={1}
-                            roughness={0.3}
+                            roughness={0.5}
+                            emissive={color}
+                            emissiveIntensity={saturation/100}
                         />
                 </mesh>
             );
@@ -122,12 +128,21 @@ function CameraController () {
 }
 
 export const ModelViewer = () => {
+    const [render, rerender] = useState(false);
+
     return (
-        <Canvas style={{height: '500px'}}>
-            <ambientLight />
-            <pointLight position={[10,10,10]} />
-            <City />
-            <CameraController />
-        </Canvas>
+        <div>
+            <Canvas style={{height: '500px'}}>
+                <ambientLight />
+                <pointLight position={[5,5,5]} />
+                <pointLight position={[-5,5,-5]} />
+                <pointLight position={[-5,5,5]} />
+                <pointLight position={[5,5,-5]} />
+                <City />
+                <CameraController />
+            </Canvas>
+            <button onClick={() => {rerender(!render)}}
+                style={{borderRadius: '0.65em'}}>New noise</button>
+        </div>
     );
 }
